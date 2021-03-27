@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="imgCont" v-if="imgArr.length">
+    <div id="imgCont" v-if="jpg.length">
       <img v-for="img in jpg" :key="img" :src="img" />
     </div>
     <div v-else>
@@ -13,7 +13,6 @@
   const parser = new DOMParser();
 import axios from "axios";
 import "./h.js";
-console.log(axios);
 export default {
   name: "App",
   computed: {
@@ -30,12 +29,20 @@ export default {
   },
   methods: {
     async fetchImg() {
-      return await this.domPrsr("https://multi.xnxx.com/");
+      return await this.domPrsr("http://multi.xnxx.com");
     },
     async domPrsr(url) {
+      try {
+
+      
       let { data } = await axios.get(url);
+      console.log(data)
       let d = parser.parseFromString(data, "text/html");
-      return this.imgExtractor(d);
+      return this.imgExtractor(d);}
+      catch(err) {
+        console.log(err)
+        return []
+      }
     },
     imgExtractor(domObj) {
       return Array.from(domObj.images);
