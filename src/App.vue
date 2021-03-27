@@ -4,7 +4,7 @@
       <img v-for="img in jpg" :key="img" :src="img" />
     </div>
     <div v-else>
-      loading
+      {{msg}}
     </div>
   </div>
 </template>
@@ -22,27 +22,28 @@ export default {
   },
   async mounted() {
     try {
-  this.imgArr = await this.fetchImg().then(r => r.map(img => img.src)) || []
-    } catch(err) {
-      console.log(err)
+  let arr = await this.fetchImg()
+ this.imgArr = arr.map(img => img.src) }
+     catch(err) {
+      this.msg=err.message
     }
   },
   methods: {
     async fetchImg() {
+      try {
       return await this.domPrsr("http://multi.xnxx.com");
+      } catch(err) {
+        this.msg=err
+      }
     },
     async domPrsr(url) {
-      try {
-
-      
       let { data } = await axios.get(url);
-      console.log(data)
       let d = parser.parseFromString(data, "text/html");
-      return this.imgExtractor(d);}
-      catch(err) {
-        console.log(err)
-        return []
-      }
+      return this.imgExtractor(d);
+      
+        
+        
+      
     },
     imgExtractor(domObj) {
       return Array.from(domObj.images);
@@ -50,6 +51,7 @@ export default {
   },
   data() {
     return {
+      msg:"loading",
       cnt: 0,
       imgArr: []
     };
