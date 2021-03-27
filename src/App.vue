@@ -1,31 +1,53 @@
 <template>
   <div id="app">
-    <pre>{{ pre }}</pre>
+    <div id="imgCont" v-if="imgArr.length">
+      <img v-for="img in jpg" :key="img" :src="img" />
+    </div>
+    <div v-else>
+      loading
+    </div>
   </div>
 </template>
 
 <script>
-  import axios from 'axios'
-  import './h.js'
-  console.log(axios)
-  export default {
+const parser = new DOMParser();
+import axios from "axios";
+import "./h.js";
+console.log(axios);
+export default {
   name: "App",
-  components: {},
- async mounted() {
-let {data}= await axios.get('https://multi.xnxx.com/')
+  computed: {
+    jpg() {
+      return this.imgArr.filter(img => img.includes("jpg"));
+    }
   },
-  
-data() {
-  imgArr: [],
-    imgArr: [],
-}
-},
- 
+  async mounted() {
+    this.imgArr = await this.fetchImg().then(r => r.map(img => img.src));
+  },
+  methods: {
+    async fetchImg() {
+      return await this.domPrsr("https://multi.xnxx.com/last");
+    },
+    async domPrsr(url) {
+      let { data } = await axios.get(url);
+      let d = parser.parseFromString(data, "text/html");
+      return this.imgExtractor(d);
+    },
+    imgExtractor(domObj) {
+      return Array.from(domObj.images);
+    }
+  },
+  data() {
+    return {
+      cnt: 0,
+      imgArr: []
+    };
+  }
 };
 </script>
 
-<style scoped type="scss">
-  html,
+<style scoped>
+html,
 body {
   height: 100vh;
   overflow: hidden;
@@ -33,12 +55,22 @@ body {
   margin: 0px;
   padding: 0px;
 }
-  * {
-    margin: 0px;
-  }
+* {
+  margin: 0px;
+}
 #app {
   background: black;
   min-height: 100%;
-
+  width: 100vw;
+  color: white;
+}
+#imgCont {
+  background: black;
+  display: grid;
+  align-items: flex-start;
+  grid-template-columns: repeat(10, 1fr);
+}
+img {
+  width: 100%;
 }
 </style>
