@@ -6,22 +6,21 @@
 
 <script>
   import axios from 'axios'
-  const jsdom = require("jsdom");
-
+  import './h.js'
   console.log(axios)
   export default {
   name: "App",
   components: {},
  async mounted() {
 let {data}= await axios.get('https://multi.xnxx.com/')
-console.log(jsdom)
   },
-  data() {
-    return {
-      imgArr: [],
-      pre: "pre"
-    };
-  }
+  
+data() {
+  imgArr: [],
+    imgArr: [],
+}
+},
+ 
 };
 </script>
 
