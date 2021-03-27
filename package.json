@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "vue": "^3.0.0",
+    "jsdom":"@latest",
+    "axios":"@latest",
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.0",

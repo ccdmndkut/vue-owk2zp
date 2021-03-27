@@ -5,13 +5,16 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  const jsdom = require("jsdom");
+
+  console.log(axios)
   export default {
   name: "App",
   components: {},
  async mounted() {
-await fetch('http://example.com/movies.json')
-  .then(response => response.json())
-  .then(data => console.log(data));
+let {data}= await axios.get('https://multi.xnxx.com/')
+console.log(jsdom)
   },
   data() {
     return {
