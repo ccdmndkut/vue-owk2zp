@@ -1,10 +1,7 @@
 <template>
   <div id="app">
-    <div id="imgCont" v-if="jpg.length">
+    <div id="imgCont" v-if="jpg">
       <img v-for="img in jpg" :key="img" :src="img" />
-    </div>
-    <div v-else>
-      {{msg}}
     </div>
   </div>
 </template>
@@ -22,10 +19,12 @@ export default {
   },
   async mounted() {
     try {
-  let arr = await this.fetchImg()
+      let { data } = await axios.get(this.url);
+      let domObj = parser.parseFromString(data, "text/html");
+  let arr = Array.from(domObj.images);
  this.imgArr = arr.map(img => img.src) }
      catch(err) {
-      this.msg=err.message
+      this.imgArr=err.message
     }
   },
   methods: {
@@ -36,23 +35,19 @@ export default {
         this.msg=err
       }
     },
-    async domPrsr(url) {
-      let { data } = await axios.get(url);
-      let d = parser.parseFromString(data, "text/html");
-      return this.imgExtractor(d);
-      
-        
-        
-      
+    async domPrsr(data) {
+      let doc = parser.parseFromString(data, "text/html");
+      return Array.from(doc.images);
     },
     imgExtractor(domObj) {
-      return Array.from(domObj.images);
+      return 
     }
   },
   data() {
     return {
       msg:"loading",
       cnt: 0,
+      url:"https://multi.xnxx.com",
       imgArr: []
     };
   }
@@ -84,7 +79,7 @@ export default {
     background: black;
     display: grid;
     align-items: flex-start;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(20, 1fr);
   }
 
   img {
