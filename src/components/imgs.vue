@@ -15,7 +15,7 @@ export default {
   name: "Imgs",
   computed: {
     jpg() {
-      return this.imgArr.filter(img => img.includes("jpg"));
+      return this.imgArr.filter(img => img.includes("jpg")) || [];
     }
   },
   async mounted() {
@@ -26,12 +26,12 @@ export default {
       let domObj = parser.parseFromString(data, "text/html");
       let arr = Array.from(domObj.images);
       this.imgArr = arr.map(img => img.src);
-    } catch (err) {
-      this.imgArr = err.message;
-    } finally {
       var macyInstance = Macy({
         container: ".imgCont"
       });
+    } catch (err) {
+      console.log(err);
+    } finally {
       console.log(new Date().getTime() - st);
     }
   },
