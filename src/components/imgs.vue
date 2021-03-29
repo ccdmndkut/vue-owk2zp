@@ -7,9 +7,10 @@
 </template>
 
 <script>
-  const parser = new DOMParser();
+const parser = new DOMParser();
 import axios from "axios";
-import Macy from 'macy'
+import ky from "ky";
+import Macy from "macy";
 export default {
   name: "Imgs",
   computed: {
@@ -19,25 +20,27 @@ export default {
   },
   async mounted() {
     try {
-      let { data } = await axios.get(this.url);
+      var st = new Date().getTime();
+      let data = await ky.get(this.url).text();
+      // let {data} = await axios.get(this.url)
       let domObj = parser.parseFromString(data, "text/html");
-  let arr = Array.from(domObj.images);
- this.imgArr = arr.map(img => img.src) }
-     catch(err) {
-      this.imgArr=err.message
+      let arr = Array.from(domObj.images);
+      this.imgArr = arr.map(img => img.src);
+    } catch (err) {
+      this.imgArr = err.message;
     } finally {
       var macyInstance = Macy({
-  container:'.imgCont'
-});
-
+        container: ".imgCont"
+      });
+      console.log(new Date().getTime() - st);
     }
   },
   methods: {
     async fetchImg() {
       try {
-      return await this.domPrsr("http://multi.xnxx.com");
-      } catch(err) {
-        this.msg=err
+        return await this.domPrsr("http://multi.xnxx.com");
+      } catch (err) {
+        this.msg = err;
       }
     },
     async domPrsr(data) {
@@ -45,14 +48,16 @@ export default {
       return Array.from(doc.images);
     },
     imgExtractor(domObj) {
-      return 
+      return;
     }
   },
   data(vm) {
     return {
-      msg:"loading",
+      msg: "loading",
       cnt: 0,
-      url:"https://www.eatliver.com/page/1/",
+      xurl: "https://multi.xnxx.com",
+
+      url: "https://www.eatliver.com/page/1/",
       imgArr: []
     };
   }
@@ -60,23 +65,20 @@ export default {
 </script>
 
 <style scoped type="scss">
-  #imgCont {
-    background: black;
-    display: grid;
-    align-items: flex-start;
-    grid-template-columns: repeat(20, 1fr);
-
-  }
-   #imgCont {
-     &img {
+#imgCont {
+  background: black;
+  display: grid;
+  align-items: flex-start;
+  grid-template-columns: repeat(20, 1fr);
+}
+#imgCont {
+  &img {
     width: 100%;
-     }
   }
-  .imgCont {
-    max-height: 100vh;
-    min-height:100vh;
-    overflow: scroll;
-  }
-
-
+}
+.imgCont {
+  max-height: 100vh;
+  min-height: 100vh;
+  overflow: scroll;
+}
 </style>
